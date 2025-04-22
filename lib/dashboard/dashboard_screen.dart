@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 import '../services/supabase_service.dart';
 import 'task_model.dart';
 import 'task_tile.dart';
@@ -14,6 +15,16 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final _taskController = TextEditingController();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Ensure the user has a profile
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final supabaseService = context.read<SupabaseService>();
+      supabaseService.ensureCurrentUserHasProfile();
+    });
+  }
 
   @override
   void dispose() {
@@ -33,7 +44,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       await supabaseService.addTask(
         Task(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          id: const Uuid().v4(),
           title: _taskController.text.trim(),
           isCompleted: false,
           userId: user.id,
@@ -92,6 +103,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: AppBar(
         title: const Text('My Tasks'),
         actions: [
+          // Projects button
+          IconButton(
+            icon: const Icon(Icons.folder),
+            tooltip: 'Projects',
+            onPressed: () {
+              Navigator.pushNamed(context, '/projects');
+            },
+          ),
+          // Profile icon button
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
@@ -132,8 +158,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 final tasks = snapshot.data ?? [];
 
                 if (tasks.isEmpty) {
-                  return const Center(
-                    child: Text('No tasks yet. Add one!'),
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('No tasks yet. Add one!'),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/projects');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.amber,
+                            foregroundColor: Colors.black,
+                          ),
+                          child: const Text('Go to Projects'),
+                        ),
+                      ],
+                    ),
                   );
                 }
 
@@ -152,4 +194,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
-} 
+}

@@ -5,11 +5,53 @@ import 'task_model.dart';
 
 class TaskTile extends StatelessWidget {
   final Task task;
+  final Function? onTaskUpdated;
 
   const TaskTile({
     super.key,
     required this.task,
+    this.onTaskUpdated,
   });
+
+  void _showEditTaskDialog(BuildContext context) {
+    final titleController = TextEditingController(text: task.title);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Task'),
+        content: TextField(
+          controller: titleController,
+          decoration: const InputDecoration(
+            labelText: 'Task Title',
+            border: OutlineInputBorder(),
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (titleController.text.trim().isNotEmpty) {
+                final updatedTask = task.copyWith(
+                  title: titleController.text.trim(),
+                );
+                context.read<SupabaseService>().updateTask(updatedTask);
+                Navigator.of(context).pop();
+                if (onTaskUpdated != null) {
+                  onTaskUpdated!();
+                }
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +88,9 @@ class TaskTile extends StatelessWidget {
       },
       onDismissed: (direction) {
         context.read<SupabaseService>().deleteTask(task.id);
+        if (onTaskUpdated != null) {
+          onTaskUpdated!();
+        }
       },
       child: Card(
         child: ListTile(
@@ -56,6 +101,9 @@ class TaskTile extends StatelessWidget {
                 context.read<SupabaseService>().updateTask(
                       task.copyWith(isCompleted: value),
                     );
+                if (onTaskUpdated != null) {
+                  onTaskUpdated!();
+                }
               }
             },
           ),
@@ -69,8 +117,17 @@ class TaskTile extends StatelessWidget {
             'Created: ${task.createdAt.toString().split('.').first}',
             style: Theme.of(context).textTheme.bodySmall,
           ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit, size: 20),
+                onPressed: () => _showEditTaskDialog(context),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-} 
+}
