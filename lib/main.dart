@@ -10,6 +10,7 @@ import 'home/home_dashboard_screen.dart';
 import 'project/projects_screen.dart';
 import 'services/supabase_service.dart';
 import 'home/home_screen.dart';
+import 'settings/settings_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
               },
               '/profile': (context) => const ProfileScreen(),
               '/projects': (context) => const ProjectsScreen(),
+              '/settings': (context) => const SettingsScreen(),
             },
           );
         },

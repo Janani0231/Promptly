@@ -244,15 +244,18 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         title: const Text('Home'),
         automaticallyImplyLeading: false, // Remove back button
         actions: [
-          // Profile icon button
+          // Settings icon button
           IconButton(
-            icon: const Icon(Icons.account_circle),
+            icon: const Icon(Icons.settings),
+            tooltip: 'Settings',
             onPressed: () {
-              Navigator.pushNamed(context, '/profile');
+              Navigator.pushNamed(context, '/settings');
             },
           ),
+          // Logout icon button
           IconButton(
             icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
             onPressed: () async {
               await supabaseService.logout();
             },

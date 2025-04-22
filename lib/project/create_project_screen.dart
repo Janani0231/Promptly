@@ -109,7 +109,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 filled: true,
-                fillColor: Colors.grey[800],
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {

@@ -166,7 +166,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 filled: true,
-                fillColor: Colors.grey[800],
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
@@ -192,7 +191,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 filled: true,
-                fillColor: Colors.grey[800],
               ),
               maxLines: 5,
             ),
@@ -211,9 +209,9 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: Colors.grey[800],
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[700]!),
+                  border: Border.all(color: Theme.of(context).dividerColor),
+                  color: Theme.of(context).inputDecorationTheme.fillColor,
                 ),
                 child: Row(
                   children: [
